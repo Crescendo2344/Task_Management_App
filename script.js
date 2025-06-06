@@ -267,3 +267,120 @@ document.addEventListener('DOMContentLoaded', function() {
             taskProjectSelect.appendChild(option);
         });
     }
+
+    function renderTasks() {
+        tasksContainer.innerHTML = '';
+        
+        let filteredTasks = [...tasks];
+        const searchTerm = taskSearch.value.toLowerCase();
+        
+        
+        if (searchTerm) {
+            filteredTasks = filteredTasks.filter(task => 
+                task.title.toLowerCase().includes(searchTerm) || 
+                task.description.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        
+        switch(currentView) {
+            case 'today':
+                const today = new Date().toISOString().split('T')[0];
+                filteredTasks = filteredTasks.filter(task => task.dueDate === today);
+                break;
+            case 'important':
+                filteredTasks = filteredTasks.filter(task => task.important && !task.completed);
+                    break;
+            case 'completed':
+                filteredTasks = filteredTasks.filter(task => task.completed);
+                break;
+            case 'project':
+                filteredTasks = filteredTasks.filter(task => task.project === currentProject);
+                break;
+            default:
+                
+                break;
+        }
+        
+        
+        const priorityFilter = filterBy.value;
+        if (priorityFilter !== 'all') {
+            filteredTasks = filteredTasks.filter(task => task.priority === priorityFilter);
+        }
+        
+        
+        const sortField = sortBy.value;
+        filteredTasks.sort((a, b) => {
+            switch(sortField) {
+                case 'dueDate':
+                    return new Date(a.dueDate || '9999-12-31') - new Date(b.dueDate || '9999-12-31');
+                case 'priority':
+                    const priorityOrder = { high: 1, medium: 2, low: 3 };
+                    return priorityOrder[a.priority] - priorityOrder[b.priority];
+                case 'creationDate':
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                case 'title':
+                    return a.title.localeCompare(b.title);
+                case 'importance':
+                    return (b.important ? 1 : 0) - (a.important ? 1 : 0);
+                default:
+                    return 0;
+            }
+        });
+        
+        if (filteredTasks.length === 0) {
+            const emptyState = document.createElement('div');
+            emptyState.className = 'empty-state';
+            emptyState.innerHTML = `
+                <i class="fas fa-tasks"></i>
+                <h3>No tasks found</h3>
+                <p>${currentView === 'all' ? 'Try adding a new task' : 'No tasks match your criteria'}</p>
+            `;
+            tasksContainer.appendChild(emptyState);
+            return;
+        }
+        
+        filteredTasks.forEach(task => {
+            const taskElement = document.createElement('div');
+            taskElement.className = `task-item ${task.priority}-priority ${task.completed ? 'completed' : ''} ${task.important ? 'important' : ''}`;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const isOverdue = task.dueDate && task.dueDate < today && !task.completed;
+            
+            taskElement.innerHTML = `
+                <div class="task-header-row">
+                    <div class="task-title">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''}>
+                        <span class="title-text">${task.title}</span>
+                    </div>
+                    <div class="task-actions-row">
+                        <button class="btn-icon important-btn" title="${task.important ? 'Remove from important' : 'Mark as important'}">
+                            <i class="fas fa-star ${task.important ? 'active' : ''}"></i>
+                        </button>
+                        <button class="btn-icon edit-btn" title="Edit task">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-icon delete-btn" title="Delete task">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                <div class="task-meta">
+                    <div>
+                        ${task.dueDate ? `
+                            <span class="task-due-date ${isOverdue ? 'overdue' : ''}">
+                                <i class="fas fa-calendar-alt"></i>
+                                ${formatDate(task.dueDate)} ${isOverdue ? '(Overdue)' : ''}
+                            </span>
+                        ` : ''}
+                    </div>
+                    <div class="task-meta-right">
+                        ${task.project ? `<span class="task-project">${task.project}</span>` : ''}
+                        <span class="task-priority ${task.priority}">
+                            <i class="fas fa-circle"></i>
+                            ${task.priority}
+                        </span>
+                    </div>
+                </div>
+            `;
