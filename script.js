@@ -420,3 +420,11 @@ document.addEventListener('DOMContentLoaded', function() {
             tasksContainer.appendChild(taskElement);
         });
     }
+
+        function    editTask(task) {
+    document.getElementById('task-title').value = task.title;
+    document.getElementById('task-description').value = task.description || '';
+    document.getElementById('task-due-date').value = task.dueDate || '';
+    document.getElementById('task-priority').value = task.priority;
+    document.getElementById('task-project').value = task.project || '';
+    document.getElementById('task-important').checked = task.important;
