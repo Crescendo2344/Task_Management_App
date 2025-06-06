@@ -468,3 +468,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return task.dueDate && task.dueDate < today && !task.completed;
         }).length;
         const highPriorityTasks = tasks.filter(task => task.priority === 'high').length;
+
+        totalTasksElement.textContent = totalTasks;
+        completedTasksStatElement.textContent = `${completedTasks} (${totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0}%)`;
+        overdueTasksElement.textContent = overdueTasks;
+        highPriorityTasksElement.textContent = highPriorityTasks;
+        
+        
+        const priorityCounts = {
+            high: tasks.filter(task => task.priority === 'high').length,
+            medium: tasks.filter(task => task.priority === 'medium').length,
+            low: tasks.filter(task => task.priority === 'low').length
+        };
