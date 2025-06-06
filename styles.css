@@ -17,3 +17,18 @@
     --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
 }
+
+[data-theme="dark"] {
+    --primary-color: #5d8acd;
+    --primary-light: #7fa6e0;
+    --primary-dark: #3a5a8a;
+    --secondary-color: #2d3748;
+    --text-color: #f0f0f0;
+    --text-light: #c0c0c0;
+    --text-lighter: #909090;
+    --border-color: #4a5568;
+    --bg-color: #1a202c;
+    --sidebar-bg: #1e2735;
+    --task-item-bg: #2d3748;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
