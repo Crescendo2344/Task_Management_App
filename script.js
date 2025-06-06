@@ -428,3 +428,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('task-priority').value = task.priority;
     document.getElementById('task-project').value = task.project || '';
     document.getElementById('task-important').checked = task.important;
+
+
+        const formTitle = taskModal.querySelector('h2');
+        formTitle.textContent = 'Edit Task';
+        
+        const submitBtn = taskForm.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Update Task';
+        
+        
+        const newForm = taskForm.cloneNode(true);
+        taskForm.parentNode.replaceChild(newForm, taskForm);
+        document.getElementById('task-form').addEventListener('submit', function(e) {
+            e.preventDefault();
