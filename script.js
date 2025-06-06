@@ -127,4 +127,143 @@ document.addEventListener('DOMContentLoaded', function() {
     
     taskForm.reset();
     taskModal.style.display = 'none';
-});
+    });
+
+ 
+    addProjectBtn.addEventListener('click', function() {
+        const projectName = newProjectInput.value.trim();
+        if (projectName && !projects.includes(projectName)) {
+            projects.push(projectName);
+            saveProjects();
+            renderProjects();
+            newProjectInput.value = '';
+        }
+    });
+
+    newProjectInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            addProjectBtn.click();
+        }
+    });
+
+    
+    allTasksBtn.addEventListener('click', function() {
+        setActiveView('all', this);
+    });
+
+    todayTasksBtn.addEventListener('click', function() {
+        setActiveView('today', this);
+    });
+
+    importantTasksBtn.addEventListener('click', function() {
+        setActiveView('important', this);
+    });
+
+    completedTasksBtn.addEventListener('click', function() {
+        setActiveView('completed', this);
+    });
+
+    
+    taskSearch.addEventListener('input', renderTasks);
+    sortBy.addEventListener('change', renderTasks);
+    filterBy.addEventListener('change', renderTasks);
+
+    function setActiveView(view, button) {
+        currentView = view;
+        currentProject = null;
+        
+        
+        document.querySelectorAll('.sidebar-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        button.classList.add('active');
+        
+        
+        document.querySelectorAll('.projects-list li').forEach(li => {
+            li.classList.remove('active');
+        });
+        
+        
+        let viewTitle = 'All Tasks';
+        switch(view) {
+            case 'today':
+                viewTitle = 'Today\'s Tasks';
+                break;
+            case 'important':
+                viewTitle = 'Important Tasks';
+                break;
+            case 'completed':
+                viewTitle = 'Completed Tasks';
+                break;
+        }
+        currentViewElement.textContent = viewTitle;
+        
+        renderTasks();
+    }
+
+    function renderProjects() {
+        projectsList.innerHTML = '';
+        projects.forEach(project => {
+            const li = document.createElement('li');
+            li.textContent = project;
+            li.addEventListener('click', () => {
+                currentProject = project;
+                currentView = 'project';
+                
+                
+                document.querySelectorAll('.sidebar-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelectorAll('.projects-list li').forEach(item => {
+                    item.classList.remove('active');
+                });
+                li.classList.add('active');
+                
+                currentViewElement.textContent = `${project} Tasks`;
+                renderTasks();
+            });
+            
+            const projectActions = document.createElement('div');
+            projectActions.className = 'project-actions';
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn-icon';
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            deleteBtn.title = 'Delete project';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (confirm(`Delete project "${project}"? Tasks will be moved to "No Project".`)) {
+                    
+                    tasks.forEach(task => {
+                        if (task.project === project) {
+                            task.project = '';
+                        }
+                    });
+                    saveTasks();
+                    
+                    
+                    projects = projects.filter(p => p !== project);
+                    saveProjects();
+                    renderProjects();
+                    
+                    
+                    if (currentProject === project) {
+                        setActiveView('all', allTasksBtn);
+                    }
+                }
+            });
+            
+            projectActions.appendChild(deleteBtn);
+            li.appendChild(projectActions);
+            projectsList.appendChild(li);
+        });
+        
+        
+        taskProjectSelect.innerHTML = '<option value="">No Project</option>';
+        projects.forEach(project => {
+            const option = document.createElement('option');
+            option.value = project;
+            option.textContent = project;
+            taskProjectSelect.appendChild(option);
+        });
+    }
