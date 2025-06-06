@@ -139,3 +139,37 @@ body {
     color: white;
 }
 
+.projects-list {
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+.projects-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+}
+
+.projects-list li:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.projects-list li.active {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.project-actions {
+    display: none;
+}
+
+.projects-list li:hover .project-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
