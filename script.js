@@ -459,3 +459,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         taskModal.style.display = 'flex';
     }
+
+    function updateStats() {
+        const totalTasks = tasks.length;
+        const completedTasks = tasks.filter(task => task.completed).length;
+        const overdueTasks = tasks.filter(task => {
+            const today = new Date().toISOString().split('T')[0];
+            return task.dueDate && task.dueDate < today && !task.completed;
+        }).length;
+        const highPriorityTasks = tasks.filter(task => task.priority === 'high').length;
