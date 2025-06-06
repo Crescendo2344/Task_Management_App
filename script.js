@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-        function    editTask(task) {
+        function editTask(task) {
     document.getElementById('task-title').value = task.title;
     document.getElementById('task-description').value = task.description || '';
     document.getElementById('task-due-date').value = task.dueDate || '';
@@ -441,3 +441,21 @@ document.addEventListener('DOMContentLoaded', function() {
         taskForm.parentNode.replaceChild(newForm, taskForm);
         document.getElementById('task-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            task.title = document.getElementById('task-title').value;
+            task.description = document.getElementById('task-description').value;
+            task.dueDate = document.getElementById('task-due-date').value;
+            task.priority = document.getElementById('task-priority').value;
+            task.project = document.getElementById('task-project').value;
+            
+            saveTasks();
+            renderTasks();
+            updateStats();
+            
+            
+            this.reset();
+            taskModal.style.display = 'none';
+        });
+        
+        
+        taskModal.style.display = 'flex';
+    }
