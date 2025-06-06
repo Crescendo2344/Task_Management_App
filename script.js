@@ -480,3 +480,28 @@ document.addEventListener('DOMContentLoaded', function() {
             medium: tasks.filter(task => task.priority === 'medium').length,
             low: tasks.filter(task => task.priority === 'low').length
         };
+
+        const maxCount = Math.max(...Object.values(priorityCounts)) || 1;
+        
+        priorityBars.forEach(bar => {
+            const priority = bar.classList.contains('high') ? 'high' : 
+                           bar.classList.contains('medium') ? 'medium' : 'low';
+            const height = (priorityCounts[priority] / maxCount) * 100;
+            bar.style.height = `${height}%`;
+        });
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    }
+
+    function saveTasks() {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function saveProjects() {
+        localStorage.setItem('projects', JSON.stringify(projects));
+    }
+});
