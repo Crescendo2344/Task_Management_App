@@ -384,3 +384,39 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             `;
+
+            
+            const checkbox = taskElement.querySelector('input[type="checkbox"]');
+            checkbox.addEventListener('change', () => {
+                task.completed = checkbox.checked;
+                saveTasks();
+                renderTasks();
+                updateStats();
+            });
+            
+            const importantBtn = taskElement.querySelector('.important-btn');
+                  importantBtn.addEventListener('click', () => {
+                  task.important = !task.important;
+                    saveTasks();
+                    renderTasks();
+                    updateStats();
+            });
+            
+            const editBtn = taskElement.querySelector('.edit-btn');
+            editBtn.addEventListener('click', () => {
+                editTask(task);
+            });
+            
+            const deleteBtn = taskElement.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to delete this task?')) {
+                    tasks = tasks.filter(t => t.id !== task.id);
+                    saveTasks();
+                    renderTasks();
+                    updateStats();
+                }
+            });
+            
+            tasksContainer.appendChild(taskElement);
+        });
+    }
